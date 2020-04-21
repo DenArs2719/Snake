@@ -15,21 +15,30 @@ namespace Snake
         SnakeLogic mySnakeLogic;
         const int fieldSize = 30;
         Graphics graphics;
+
         public FormSnake()
         {
             InitializeComponent();
             mySnakeLogic = new SnakeLogic(20,15);
             mySnakeLogic.SnakeMoved += MySnakeLogic_SnakeMoved; ///przepisywanie metody obslugującej
-
+            mySnakeLogic.SnakeGameEnd += MySnakeLogic_SnakeGameEnd;
             pictureBoxSnakeBoard.Image = new Bitmap(mySnakeLogic.Width * fieldSize+1, mySnakeLogic.Height * fieldSize+1); ///tworzenie bitmapu
             graphics = Graphics.FromImage(pictureBoxSnakeBoard.Image);
-
+      
             RepaintBoard();
         }
+
+       
 
         private void MySnakeLogic_SnakeMoved()
         {
             RepaintBoard(); //odresowanie płanszy
+        }
+
+        private void MySnakeLogic_SnakeGameEnd()
+        {
+            RepaintBoard(); //odresowanie płansz
+            MessageBox.Show("The Game is End");
         }
 
         private void RepaintBoard()
@@ -61,7 +70,11 @@ namespace Snake
                                     fieldSize,
                                     fieldSize); ///rysowanie jabłka
 
-            pictureBoxSnakeBoard.Refresh(); ///odresowanie ,żeby snake bigł
+            graphics.DrawString(mySnakeLogic.AppleCount.ToString(),
+                                new Font(FontFamily.GenericSansSerif,fieldSize*2),
+                                new SolidBrush(Color.Brown),
+                                new Point(fieldSize / 2,fieldSize / 2 ));
+            pictureBoxSnakeBoard.Refresh(); ///odresowanie ,żeby snake biegł
         }
 
         private void FormSnake_KeyDown(object sender, KeyEventArgs e)
@@ -84,8 +97,6 @@ namespace Snake
                 case Keys.S:
                     mySnakeLogic.Direction = SnakeLogic.SnakeDirection.Down;
                     break;
-
-
             }
         }
     }

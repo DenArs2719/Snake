@@ -12,7 +12,7 @@ namespace Snake
     {
         public delegate void SnakeEvent(); ///pokazanie pewnego typu metody
         public event SnakeEvent SnakeMoved; /// dekloracja eventa typu SnakeEvent()
-
+        public event SnakeEvent SnakeGameEnd; ///koniec gry
         private Timer timerSnakeMove = new Timer(); ///deklaracja timera
 
         private int width;
@@ -22,24 +22,32 @@ namespace Snake
         public int Height { get => height; private set => height = value; }
         public List<Point> Snake { get => snake; private set => snake = value; }
 
+        private int appleCount;
         internal SnakeDirection Direction 
         { 
             private get => direction;
             set
             {
-                direction = value;
-                TimerSnakeMove_Tick(null, null);
+                if ((direction == SnakeDirection.Up && value != SnakeDirection.Down)
+                    ||(direction == SnakeDirection.Down && value != SnakeDirection.Up)
+                    ||(direction == SnakeDirection.Left && value != SnakeDirection.Right)
+                    ||(direction == SnakeDirection.Right && value != SnakeDirection.Left))
+                {
+                    direction = value;
+                    TimerSnakeMove_Tick(null, null);
+                }
             }
         }
 
-        public Point Apple { get => apple; set => apple = value; }
+        public Point Apple { get => apple; private set => apple = value; }
+        public int AppleCount { get => appleCount; private set => appleCount = value; }
 
         private List<Point> snake;
 
         private Point apple; ///jabłko
 
         private Random generator = new Random(); //generowanie jabłek
-
+ 
 
         public enum SnakeDirection
         {
@@ -51,12 +59,13 @@ namespace Snake
 
         private SnakeDirection direction;
 
+       
+
         public SnakeLogic(int width, int height)
         {
             ///rozmiar planszy
             this.Width = width;
             this.Height = height;
-         
 
             Snake = new List<Point>();
             ///ustowianie polozenia snake
@@ -68,6 +77,7 @@ namespace Snake
             Direction = SnakeDirection.Up;
 
             generateApple();
+            AppleCount = 0;
 
             ///konfiguracja taimera
             timerSnakeMove.Tick += TimerSnakeMove_Tick;
@@ -110,11 +120,26 @@ namespace Snake
 
             }
 
+            newHead = new Point((newHead.X + Width)% Width,(newHead.Y + Height)%Height); ///po zaplanszę
+
+            if(Snake.Contains(newHead)) ///kolizja z samym sabą
+            {
+                timerSnakeMove.Stop();
+                if (SnakeGameEnd != null)
+                {
+                    SnakeGameEnd();
+                }
+                return;
+                
+            }
+
             Snake.Insert(0,newHead); //dodowanie do lisy
             if(newHead == Apple)
             {
+                AppleCount++;
                 generateApple();
                 timerSnakeMove.Interval = (int)(timerSnakeMove.Interval * 0.8);
+                  
             }
             else
             {
@@ -126,7 +151,6 @@ namespace Snake
             {
                 SnakeMoved(); ///wywolujemy zdarzenie
             }
-
 
         }
     }
