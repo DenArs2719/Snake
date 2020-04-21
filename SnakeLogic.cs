@@ -20,9 +20,9 @@ namespace Snake
 
         public int Width { get => width; private set => width = value; }
         public int Height { get => height; private set => height = value; }
-        public Point Snake { get => snake; private set => snake = value; }
+        public List<Point> Snake { get => snake; private set => snake = value; }
 
-        private Point snake;
+        private List<Point> snake;
         public SnakeLogic(int width, int height)
         {
             ///rozmiar planszy
@@ -34,12 +34,21 @@ namespace Snake
 
             timerSnakeMove.Tick += TimerSnakeMove_Tick;
 
-            snake = new Point(width / 2, height - 1); ///polozenie snake
+            Snake = new List<Point>();
+            ///ustowianie polozenia snake
+            Snake.Add(new Point(width / 2, height - 1));
+            Snake.Add(new Point(width / 2, height + 0));
+            Snake.Add(new Point(width / 2, height + 1));
+            Snake.Add(new Point(width / 2, height + 2));
         }
 
         private void TimerSnakeMove_Tick(object sender, EventArgs e)
         {
-            snake = new Point(snake.X,snake.Y - 1); ///przesuwanie snake
+            Point newHead = new Point(Snake.First().X, Snake.First().Y - 1);
+
+            Snake.Insert(0,newHead); //dodowanie do lisy
+            Snake.Remove(Snake.Last());///usuwamy ostatni punkt
+
             if(SnakeMoved != null) ///zeby nie było błąda na wartość null
             {
                 SnakeMoved(); ///wywolujemy zdarzenie

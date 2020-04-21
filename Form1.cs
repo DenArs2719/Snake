@@ -44,11 +44,16 @@ namespace Snake
                 }
             }
 
-            graphics.FillEllipse(new SolidBrush(Color.GreenYellow),
-                                 mySnakeLogic.Snake.X*fieldSize,
-                                 mySnakeLogic.Snake.Y*fieldSize,
-                                 fieldSize,
-                                 fieldSize);  ///narysowanie snake
+            for (int i = 0; i < mySnakeLogic.Snake.Count; i++)
+            {
+
+
+                graphics.FillEllipse(new SolidBrush(Color.GreenYellow),
+                                     mySnakeLogic.Snake[i].X * fieldSize,
+                                     mySnakeLogic.Snake[i].Y * fieldSize,
+                                     fieldSize,
+                                     fieldSize);  ///narysowanie snake
+            }
 
             pictureBoxSnakeBoard.Refresh(); ///odresowanie ,żeby snake bigł
         }
