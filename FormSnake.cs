@@ -55,6 +55,12 @@ namespace Snake
                                      fieldSize);  ///narysowanie snake
             }
 
+            graphics.FillEllipse(new SolidBrush(Color.Red),
+                                    mySnakeLogic.Apple.X * fieldSize,
+                                    mySnakeLogic.Apple.Y * fieldSize,
+                                    fieldSize,
+                                    fieldSize); ///rysowanie jabłka
+
             pictureBoxSnakeBoard.Refresh(); ///odresowanie ,żeby snake bigł
         }
 

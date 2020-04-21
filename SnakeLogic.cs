@@ -32,7 +32,14 @@ namespace Snake
             }
         }
 
+        public Point Apple { get => apple; set => apple = value; }
+
         private List<Point> snake;
+
+        private Point apple; ///jabłko
+
+        private Random generator = new Random(); //generowanie jabłek
+
 
         public enum SnakeDirection
         {
@@ -49,11 +56,7 @@ namespace Snake
             ///rozmiar planszy
             this.Width = width;
             this.Height = height;
-            ///konfiguracja taimera
-            timerSnakeMove.Enabled = true;
-            timerSnakeMove.Interval = 500;
-
-            timerSnakeMove.Tick += TimerSnakeMove_Tick;
+         
 
             Snake = new List<Point>();
             ///ustowianie polozenia snake
@@ -63,6 +66,26 @@ namespace Snake
             Snake.Add(new Point(width / 2, height + 2));
 
             Direction = SnakeDirection.Up;
+
+            generateApple();
+
+            ///konfiguracja taimera
+            timerSnakeMove.Tick += TimerSnakeMove_Tick;
+            timerSnakeMove.Interval = 500;
+            timerSnakeMove.Enabled = true;
+        }
+
+        private void generateApple()
+        {
+            Point tmpApple;
+            do
+            {
+                tmpApple = new Point(generator.Next(Width), generator.Next(Height));
+
+
+            } while (Snake.Contains(tmpApple)); ///do puki snake nie zawiera jabłka
+
+            Apple = tmpApple;
         }
 
         private void TimerSnakeMove_Tick(object sender, EventArgs e)
@@ -88,9 +111,18 @@ namespace Snake
             }
 
             Snake.Insert(0,newHead); //dodowanie do lisy
-            Snake.Remove(Snake.Last());///usuwamy ostatni punkt
+            if(newHead == Apple)
+            {
+                generateApple();
+                timerSnakeMove.Interval = (int)(timerSnakeMove.Interval * 0.8);
+            }
+            else
+            {
+                Snake.Remove(Snake.Last());///usuwamy ostatni punkt
+            }
 
-            if(SnakeMoved != null) ///zeby nie było błąda na wartość null
+
+            if (SnakeMoved != null) ///zeby nie było błąda na wartość null
             {
                 SnakeMoved(); ///wywolujemy zdarzenie
             }
