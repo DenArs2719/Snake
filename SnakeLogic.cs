@@ -22,7 +22,28 @@ namespace Snake
         public int Height { get => height; private set => height = value; }
         public List<Point> Snake { get => snake; private set => snake = value; }
 
+        internal SnakeDirection Direction 
+        { 
+            private get => direction;
+            set
+            {
+                direction = value;
+                TimerSnakeMove_Tick(null, null);
+            }
+        }
+
         private List<Point> snake;
+
+        public enum SnakeDirection
+        {
+            Left,
+            Right,
+            Up,
+            Down
+        }
+
+        private SnakeDirection direction;
+
         public SnakeLogic(int width, int height)
         {
             ///rozmiar planszy
@@ -40,11 +61,31 @@ namespace Snake
             Snake.Add(new Point(width / 2, height + 0));
             Snake.Add(new Point(width / 2, height + 1));
             Snake.Add(new Point(width / 2, height + 2));
+
+            Direction = SnakeDirection.Up;
         }
 
         private void TimerSnakeMove_Tick(object sender, EventArgs e)
         {
-            Point newHead = new Point(Snake.First().X, Snake.First().Y - 1);
+            Point newHead = Point.Empty; 
+
+            ///przestawiamy punkt zgodnie z kierunkiem
+            switch (direction)
+            {
+                case SnakeDirection.Left:
+                    newHead =  new Point(Snake.First().X - 1, Snake.First().Y);
+                    break;
+                case SnakeDirection.Right:
+                    newHead =  new Point(Snake.First().X + 1, Snake.First().Y);
+                    break;
+                case SnakeDirection.Up:
+                    newHead =  new Point(Snake.First().X, Snake.First().Y - 1);
+                    break;
+                case SnakeDirection.Down:
+                    newHead = new Point(Snake.First().X, Snake.First().Y + 1);
+                    break;
+
+            }
 
             Snake.Insert(0,newHead); //dodowanie do lisy
             Snake.Remove(Snake.Last());///usuwamy ostatni punkt

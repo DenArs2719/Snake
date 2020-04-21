@@ -1,6 +1,6 @@
 ﻿namespace Snake
 {
-    partial class Form1
+    partial class FormSnake
     {
         /// <summary>
         /// Required designer variable.
@@ -49,6 +49,7 @@
             this.Controls.Add(this.pictureBoxSnakeBoard);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormSnake_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSnakeBoard)).EndInit();
             this.ResumeLayout(false);
 
